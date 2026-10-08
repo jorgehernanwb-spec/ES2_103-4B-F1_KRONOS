@@ -1,16 +1,12 @@
+
 <resources>
     <!-- Nombre de la aplicación -->
-    <string name="app_name">MiPrimeraAplicacion</string>
+    <string name="app_name">CRONOS</string>
 
-    <!-- Lista de idiomas disponibles para la selección de preferencias del usuario -->
+    <!-- Ubicaciones del invernadero -->
     <string-array name="idiomas">
-        <!-- Opción de idioma Español -->
-        <item>Español</item>
-        <!-- Opción de idioma Inglés -->
-        <item>Inglés</item>
-        <!-- Opción de idioma Italiano -->
-        <item>Italiano</item>
-        <!-- Opción de idioma Portugués -->
-        <item>Portugues</item>
+        <item>Invernadero 1</item>
+        <item>Invernadero 2</item>
+        <item>Invernadero 3</item>
     </string-array>
 </resources>

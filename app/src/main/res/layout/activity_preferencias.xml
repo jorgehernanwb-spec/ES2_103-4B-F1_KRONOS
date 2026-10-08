@@ -1,55 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Contenedor principal ConstraintLayout para organizar la pantalla de Preferencias -->
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#F1F8F4"
     tools:context=".PreferenciasActivity">
 
-    <!-- Título de la pantalla de Preferencias centrado en la parte superior -->
+    <!-- Titulo principal -->
     <TextView
         android:id="@+id/txtTituloPreferencias"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="Preferencias"
+        android:layout_marginTop="40dp"
+        android:text="🌱 Preferencias de CRONOS"
+        android:textColor="#1B5E20"
         android:textSize="24sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Contenedor lineal vertical de ancho completo ubicado debajo del título -->
+    <!-- Contenedor de preferencias -->
     <LinearLayout
         android:id="@+id/layoutPreferencias"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp"
         android:layout_marginEnd="24dp"
+        android:layout_marginTop="32dp"
         android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:padding="20dp"
+        android:background="#FFFFFF"
+        app:layout_constraintTop_toBottomOf="@id/txtTituloPreferencias"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtTituloPreferencias">
+        app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- Switch para activar o desactivar la recepción de notificaciones -->
+        <!-- Activar alertas -->
         <com.google.android.material.materialswitch.MaterialSwitch
             android:id="@+id/swNotificaciones"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Recibir notificaciones"
+            android:text="Recibir alertas de temperatura"
+            android:textColor="#263238"
             android:textSize="16sp" />
 
-        <!-- Selector desplegable (Spinner) para elegir el idioma preferido -->
+        <!-- Titulo selector -->
+        <TextView
+            android:id="@+id/txtSeleccionInvernadero"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="Seleccionar invernadero"
+            android:textColor="#1B5E20"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <!-- Selector de invernadero -->
         <Spinner
             android:id="@+id/spIdioma"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="12dp"
             android:entries="@array/idiomas"
             android:minHeight="48dp" />
+
+        <!-- Informacion -->
+        <TextView
+            android:id="@+id/txtInformacion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="CRONOS permite monitorear las condiciones ambientales de tus invernaderos."
+            android:textColor="#607D8B"
+            android:textSize="14sp" />
 
     </LinearLayout>
 

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="260dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="30dp"
+    android:background="#20392F">
+
+    <TextView
+        android:id="@+id/txtRelojArena"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:gravity="center"
+        android:text="⌛"
+        android:textSize="65sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="KRONOS"
+        android:fontFamily="serif"
+        android:textStyle="bold"
+        android:letterSpacing="0.15"
+        android:textSize="26sp"
+        android:textColor="#E5CAA0" />
+
+    <TextView
+        android:id="@+id/txtMensajeCarga"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="Cargando..."
+        android:textColor="#FFFFFF"
+        android:textSize="14sp" />
+
+</LinearLayout>

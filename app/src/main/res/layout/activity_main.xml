@@ -1,123 +1,195 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Contenedor principal de tipo ConstraintLayout: permite posicionar elementos mediante restricciones relativas -->
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:fillViewport="true"
+    android:background="#101E19">
 
-    <!-- Incremento 1: Logo de INACAP centrado en la parte superior -->
-    <ImageView
-        android:id="@+id/imgLogo"
-        android:layout_width="96dp"
-        android:layout_height="96dp"
-        android:layout_marginTop="32dp"
-        android:src="@drawable/logo_inacap"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <!-- Incremento 2: Título de la pantalla ubicado debajo del logo -->
-    <TextView
-        android:id="@+id/txtTitulo"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/main"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Iniciar sesión"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/imgLogo" />
+        android:minHeight="600dp"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:padding="24dp">
 
-    <!-- Incremento 3: Campo de texto para ingresar el usuario -->
-    <EditText
-        android:id="@+id/edtUsuario"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="24dp"
-        android:hint="Usuario"
-        android:inputType="text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txtTitulo" />
+        <!-- Logo provisional de KRONOS -->
+        <TextView
+            android:id="@+id/imgLogo"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:text="⌛"
+            android:textSize="60sp"
+            android:background="#20392F"
+            android:contentDescription="Logo de Kronos" />
 
-    <!-- Incremento 4: Campo de contraseña con texto oculto (textPassword) -->
-    <EditText
-        android:id="@+id/edtPassword"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:hint="Contraseña"
-        android:inputType="textPassword"
-        app:layout_constraintEnd_toStartOf="@+id/btnMostrarPassword"
-        app:layout_constraintStart_toStartOf="@id/edtUsuario"
-        app:layout_constraintTop_toBottomOf="@id/edtUsuario" />
+        <!-- Nombre con estilo clasico -->
+        <TextView
+            android:id="@+id/txtNombreKronos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="KRONOS"
+            android:fontFamily="serif"
+            android:letterSpacing="0.16"
+            android:textSize="36sp"
+            android:textStyle="bold"
+            android:textColor="#E5CAA0" />
 
-    <!-- Botón para alternar la visibilidad de la contraseña -->
-    <ImageButton
-        android:id="@+id/btnMostrarPassword"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:background="@android:color/transparent"
-        android:contentDescription="Mostrar u ocultar contraseña"
-        android:onClick="onMostrarPasswordClick"
-        android:src="@drawable/ic_visibility_24"
-        app:layout_constraintBottom_toBottomOf="@+id/edtPassword"
-        app:layout_constraintEnd_toEndOf="@id/edtUsuario"
-        app:layout_constraintTop_toTopOf="@+id/edtPassword" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="MONITOREO INTELIGENTE DE INVERNADEROS"
+            android:textSize="11sp"
+            android:letterSpacing="0.04"
+            android:textColor="#A3B7AC"
+            android:gravity="center" />
 
-    <!-- Incremento 5: Casilla de verificación para recordar sesión -->
-    <CheckBox
-        android:id="@+id/chkRecordarme"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Recordarme"
-        app:layout_constraintStart_toStartOf="@id/edtPassword"
-        app:layout_constraintTop_toBottomOf="@id/edtPassword" />
+        <!-- Contenedor del formulario -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:orientation="vertical"
+            android:padding="22dp"
+            android:background="#1B2D26">
 
-    <!-- Incremento 6 y 7: Botón de ingresar vinculado a onIngresarClick -->
-    <Button
-        android:id="@+id/btnIngresar"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:onClick="onIngresarClick"
-        android:text="Ingresar"
-        app:layout_constraintEnd_toEndOf="@id/edtPassword"
-        app:layout_constraintStart_toStartOf="@id/edtPassword"
-        app:layout_constraintTop_toBottomOf="@id/chkRecordarme" />
+            <TextView
+                android:id="@+id/txtTitulo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Bienvenido"
+                android:textColor="#FFFFFF"
+                android:textSize="25sp"
+                android:textStyle="bold" />
 
-    <!-- Botón de Limpiar: resetea campos de usuario, contraseña y recordarme, con fondo rojo y vinculado a onLimpiarClick -->
-    <Button
-        android:id="@+id/btnLimpiar"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:backgroundTint="#FF0000"
-        android:onClick="onLimpiarClick"
-        android:text="Limpiar"
-        app:layout_constraintEnd_toEndOf="@+id/btnIngresar"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/btnIngresar"
-        app:layout_constraintTop_toBottomOf="@+id/btnIngresar" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="Ingresa a tu sistema de monitoreo"
+                android:textColor="#A3B7AC"
+                android:textSize="14sp" />
 
-    <!-- Botón para ir a la pantalla de Registro -->
-    <Button
-        android:id="@+id/btnIrARegistro"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:backgroundTint="#4CAF50"
-        android:onClick="onIrARegistroClick"
-        android:text="¿No tienes cuenta? Regístrate"
-        app:layout_constraintEnd_toEndOf="@+id/btnLimpiar"
-        app:layout_constraintStart_toStartOf="@+id/btnLimpiar"
-        app:layout_constraintTop_toBottomOf="@+id/btnLimpiar" />
+            <!-- Correo electronico -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:text="Correo electrónico"
+                android:textColor="#C4D6CA"
+                android:textSize="14sp" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <EditText
+                android:id="@+id/edtUsuario"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="8dp"
+                android:backgroundTint="#73D99A"
+                android:hint="correo@ejemplo.com"
+                android:inputType="textEmailAddress"
+                android:singleLine="true"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#91A99A" />
+
+            <!-- Contrasena -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:text="Contraseña"
+                android:textColor="#C4D6CA"
+                android:textSize="14sp" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="8dp">
+
+                <EditText
+                    android:id="@+id/edtPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="48dp"
+                    android:backgroundTint="#73D99A"
+                    android:hint="Ingresa tu contraseña"
+                    android:inputType="textPassword"
+                    android:singleLine="true"
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#91A99A" />
+
+                <ImageButton
+                    android:id="@+id/btnMostrarPassword"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="end|center_vertical"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="Mostrar u ocultar contraseña"
+                    android:onClick="onMostrarPasswordClick"
+                    android:src="@drawable/ic_visibility_24"
+                    app:tint="#A3B7AC" />
+
+            </FrameLayout>
+
+            <!-- Recordarme -->
+            <CheckBox
+                android:id="@+id/chkRecordarme"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:buttonTint="#73D99A"
+                android:text="Recordarme"
+                android:textColor="#C4D6CA" />
+
+            <!-- Iniciar sesion -->
+            <Button
+                android:id="@+id/btnIngresar"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="20dp"
+                android:backgroundTint="#358655"
+                android:onClick="onIngresarClick"
+                android:text="INICIAR SESIÓN"
+                android:textColor="#FFFFFF" />
+
+            <!-- Limpiar -->
+            <Button
+                android:id="@+id/btnLimpiar"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="8dp"
+                android:backgroundTint="#34483D"
+                android:onClick="onLimpiarClick"
+                android:text="Limpiar campos"
+                android:textColor="#FFFFFF" />
+
+            <!-- Registro -->
+            <Button
+                android:id="@+id/btnIrARegistro"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="12dp"
+                android:backgroundTint="#254D38"
+                android:onClick="onIrARegistroClick"
+                android:text="¿No tienes cuenta? Regístrate"
+                android:textColor="#90DEAA" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:gravity="center"
+            android:text="TEMPERATURA · HUMEDAD · VENTILACIÓN"
+            android:textColor="#769585"
+            android:textSize="11sp" />
+
+    </LinearLayout>
+</ScrollView>

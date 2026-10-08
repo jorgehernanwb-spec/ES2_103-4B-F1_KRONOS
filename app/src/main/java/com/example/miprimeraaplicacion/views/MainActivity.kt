@@ -29,12 +29,14 @@ import androidx.core.view.WindowInsetsCompat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.example.miprimeraaplicacion.CargandoDialog
 
 // Declaración de la clase principal de la pantalla de Login que hereda de AppCompatActivity
 class MainActivity : AppCompatActivity() {
 
     // FIREBASE: Instancia principal de Firebase Authentication
     private lateinit var auth: FirebaseAuth
+    private lateinit var cargando: CargandoDialog
 
     // Variable de estado a nivel de clase para rastrear si la contraseña está visible (false por defecto)
     var mostrandoPassword: Boolean = false
@@ -61,6 +63,7 @@ class MainActivity : AppCompatActivity() {
 
         // FIREBASE: INICIALIZACIÓN DE LA INSTANCIA DE FIREBASE AUTH
         auth = Firebase.auth
+        cargando = CargandoDialog(this)
     }
 
     // Método público ejecutado automáticamente al hacer clic en el botón btnMostrarPassword (vía android:onClick)
@@ -144,6 +147,7 @@ class MainActivity : AppCompatActivity() {
         } else {
             // FIREBASE: INICIO DE AUTENTICACIÓN CON FIREBASE AUTH
             // Intenta iniciar sesión con el correo y contraseña provistos en Firebase
+            cargando.mostrar("Verificando credenciales...")
             auth.signInWithEmailAndPassword(usuario, password)
                 .addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
