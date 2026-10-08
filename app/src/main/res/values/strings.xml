@@ -1,7 +1,7 @@
 
 <resources>
     <!-- Nombre de la aplicación -->
-    <string name="app_name">CRONOS</string>
+    <string name="app_name">KRONOS</string>
 
     <!-- Ubicaciones del invernadero -->
     <string-array name="idiomas">

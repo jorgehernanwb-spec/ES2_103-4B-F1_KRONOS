@@ -8,6 +8,7 @@ import android.content.Intent
 import android.os.Bundle
 // Importa View para recibir la vista que disparó un evento de clic
 import android.view.View
+import android.widget.Button
 // Importa el componente visual CheckBox
 import android.widget.CheckBox
 // Importa el componente visual EditText para campos de entrada de texto
@@ -38,6 +39,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var cargando: CargandoDialog
 
+    // Control para evitar llamadas concurrentes de inicio de sesión
+    private var isLoggingIn: Boolean = false
+
     // Variable de estado a nivel de clase para rastrear si la contraseña está visible (false por defecto)
     var mostrandoPassword: Boolean = false
     // Contador a nivel de clase para registrar la cantidad de intentos fallidos de inicio de sesión
@@ -64,6 +68,21 @@ class MainActivity : AppCompatActivity() {
         // FIREBASE: INICIALIZACIÓN DE LA INSTANCIA DE FIREBASE AUTH
         auth = Firebase.auth
         cargando = CargandoDialog(this)
+
+        cargarPreferenciasRecordarme()
+    }
+
+    // Carga el correo guardado si la casilla Recordarme estaba marcada previamente
+    private fun cargarPreferenciasRecordarme() {
+        val prefs = getSharedPreferences("kronos_login_prefs", MODE_PRIVATE)
+        val recordar = prefs.getBoolean("recordar", false)
+        if (recordar) {
+            val emailGuardado = prefs.getString("email", "") ?: ""
+            val edtUsuario = findViewById<EditText>(R.id.edtUsuario)
+            val chkRecordarme = findViewById<CheckBox>(R.id.chkRecordarme)
+            edtUsuario.setText(emailGuardado)
+            chkRecordarme.isChecked = true
+        }
     }
 
     // Método público ejecutado automáticamente al hacer clic en el botón btnMostrarPassword (vía android:onClick)
@@ -89,18 +108,18 @@ class MainActivity : AppCompatActivity() {
 
     // Método público ejecutado automáticamente al hacer clic en el botón Ingresar (vía android:onClick)
     fun onIngresarClick(view: View) {
-        // Busca y obtiene la referencia del campo de texto de usuario por su ID
-        val edtUsuario = findViewById<EditText>(R.id.edtUsuario)
-        // Busca y obtiene la referencia del campo de texto de contraseña por su ID
-        val edtPassword = findViewById<EditText>(R.id.edtPassword)
-        // Busca y obtiene la referencia del checkbox "Recordarme" por su ID
-        val chkRecordarme = findViewById<CheckBox>(R.id.chkRecordarme)
+        // Evita solicitudes de login duplicadas si ya hay una petición en curso
+        if (isLoggingIn) return
 
-        // Extrae el texto ingresado en el campo usuario y lo convierte a String eliminando espacios perimetrales
+        // Busca y obtiene la referencia de los controles
+        val edtUsuario = findViewById<EditText>(R.id.edtUsuario)
+        val edtPassword = findViewById<EditText>(R.id.edtPassword)
+        val chkRecordarme = findViewById<CheckBox>(R.id.chkRecordarme)
+        val btnIngresar = findViewById<Button>(R.id.btnIngresar)
+
+        // Extrae el texto ingresado en el campo usuario y contraseña
         val usuario = edtUsuario.text.toString().trim()
-        // Extrae el texto ingresado en el campo contraseña y lo convierte a String
         val password = edtPassword.text.toString()
-        // Obtiene el estado booleano del CheckBox (true si está marcado, false si no)
         val recordar = chkRecordarme.isChecked
 
         // Bandera para controlar si todos los campos cumplen las validaciones requeridas
@@ -108,95 +127,109 @@ class MainActivity : AppCompatActivity() {
 
         // Valida si el campo usuario está vacío
         if (usuario.isEmpty()) {
-            // Muestra mensaje de error flotante directo sobre el campo usuario
             edtUsuario.error = "Ingresa tu email de usuario"
-            // Marca la validación general como falsa
             esValido = false
         // Valida si el formato de usuario no coincide con un correo electrónico válido
         } else if (!Patterns.EMAIL_ADDRESS.matcher(usuario).matches()) {
-            // Muestra error indicando que el formato de correo es incorrecto
             edtUsuario.error = "Ingresa un email válido (ej: usuario@correo.com)"
-            // Marca la validación general como falsa
             esValido = false
         } else {
-            // Limpia cualquier error visual previo en el campo usuario
             edtUsuario.error = null
         }
 
         // Valida si el campo contraseña está vacío
         if (password.isEmpty()) {
-            // Muestra mensaje de error flotante directo sobre el campo contraseña
             edtPassword.error = "Ingresa tu contraseña"
-            // Marca la validación general como falsa
             esValido = false
         // Valida si la contraseña tiene menos de 6 caracteres
         } else if (password.length < 6) {
-            // Muestra mensaje de error indicando la longitud mínima requerida
             edtPassword.error = "La contraseña debe tener al menos 6 caracteres"
-            // Marca la validación general como falsa
             esValido = false
         } else {
-            // Limpia cualquier error visual previo en el campo contraseña
             edtPassword.error = null
         }
 
         // Si alguna validación falló
         if (!esValido) {
-            // Incrementa en 1 el contador de intentos fallidos
             intentosFallidos++
-        } else {
-            // FIREBASE: INICIO DE AUTENTICACIÓN CON FIREBASE AUTH
-            // Intenta iniciar sesión con el correo y contraseña provistos en Firebase
-            cargando.mostrar("Verificando credenciales...")
-            auth.signInWithEmailAndPassword(usuario, password)
-                .addOnCompleteListener(this) { task ->
-                    if (task.isSuccessful) {
-                        // FIREBASE: INICIO DE SESIÓN EXITOSO EN FIREBASE
-                        val firebaseUser = auth.currentUser
-                        val emailUsuario = firebaseUser?.email ?: usuario
-
-                        Toast.makeText(this, "FIREBASE: Inicio de sesión exitoso", Toast.LENGTH_SHORT).show()
-
-                        // Crea un Intent explícito indicando la pantalla actual (this) y la pantalla destino (BienvenidaActivity)
-                        val intent = Intent(this, BienvenidaActivity::class.java)
-                        // Empaqueta el email del usuario como un dato extra en el Intent con la clave "usuario"
-                        intent.putExtra("usuario", emailUsuario)
-                        // Inicia la navegación y lanza la nueva Activity
-                        startActivity(intent)
-                    } else {
-                        // FIREBASE: FALLÓ EL INICIO DE SESIÓN EN FIREBASE
-                        intentosFallidos++
-                        val mensajeError = task.exception?.localizedMessage ?: "Error al autenticar usuario"
-                        Toast.makeText(this, "FIREBASE: Error de autenticación: $mensajeError", Toast.LENGTH_LONG).show()
-                    }
-                }
+            return
         }
+
+        // Bloquea nuevos envíos y desactiva el botón mientras se comunica con Firebase
+        isLoggingIn = true
+        btnIngresar.isEnabled = false
+
+        // Muestra la animación de reloj de arena de KRONOS
+        cargando.mostrar("Verificando credenciales...")
+
+        // Autentica contra Firebase Authentication
+        auth.signInWithEmailAndPassword(usuario, password)
+            .addOnCompleteListener(this) { task ->
+                // Oculta SIEMPRE el diálogo de carga y rehabilita el botón (tanto en éxito como en error)
+                cargando.ocultar()
+                isLoggingIn = false
+                btnIngresar.isEnabled = true
+
+                if (task.isSuccessful) {
+                    // Gestión de Recordarme: solo se persiste el email, jamás la contraseña en texto plano
+                    val prefs = getSharedPreferences("kronos_login_prefs", MODE_PRIVATE)
+                    if (recordar) {
+                        prefs.edit()
+                            .putBoolean("recordar", true)
+                            .putString("email", usuario)
+                            .apply()
+                    } else {
+                        prefs.edit()
+                            .putBoolean("recordar", false)
+                            .remove("email")
+                            .apply()
+                    }
+
+                    // FIREBASE: INICIO DE SESIÓN EXITOSO EN FIREBASE
+                    val firebaseUser = auth.currentUser
+                    val emailUsuario = firebaseUser?.email ?: usuario
+
+                    Toast.makeText(this, "FIREBASE: Inicio de sesión exitoso", Toast.LENGTH_SHORT).show()
+
+                    // Navega a BienvenidaActivity pasando el email verificado
+                    val intent = Intent(this, BienvenidaActivity::class.java)
+                    intent.putExtra("usuario", emailUsuario)
+                    startActivity(intent)
+                } else {
+                    // FIREBASE: FALLÓ EL INICIO DE SESIÓN EN FIREBASE
+                    intentosFallidos++
+                    val mensajeError = task.exception?.localizedMessage ?: "Error al autenticar usuario"
+                    Toast.makeText(this, "FIREBASE: Error de autenticación: $mensajeError", Toast.LENGTH_LONG).show()
+                }
+            }
     }
 
     // Método público ejecutado automáticamente al hacer clic en el botón Limpiar (vía android:onClick)
     fun onLimpiarClick(view: View) {
-        // Busca y obtiene la referencia del campo de texto de usuario por su ID
         val edtUsuario = findViewById<EditText>(R.id.edtUsuario)
-        // Busca y obtiene la referencia del campo de texto de contraseña por su ID
         val edtPassword = findViewById<EditText>(R.id.edtPassword)
-        // Busca y obtiene la referencia del checkbox "Recordarme" por su ID
         val chkRecordarme = findViewById<CheckBox>(R.id.chkRecordarme)
 
-        // Limpia el texto del campo usuario dejándolo vacío
+        // Limpia el texto y errores visuales
         edtUsuario.setText("")
-        // Limpia el texto del campo contraseña dejándolo vacío
         edtPassword.setText("")
-        // Remueve cualquier mensaje de error visual activo en el campo usuario
         edtUsuario.error = null
-        // Remueve cualquier mensaje de error visual activo en el campo contraseña
         edtPassword.error = null
-        // Desmarca la casilla de verificación de recordarme
         chkRecordarme.isChecked = false
+
+        // Limpia la preferencia guardada de Recordarme
+        val prefs = getSharedPreferences("kronos_login_prefs", MODE_PRIVATE)
+        prefs.edit().clear().apply()
     }
 
     // Método público ejecutado automáticamente al hacer clic en el botón de Registrarse (vía android:onClick)
     fun onIrARegistroClick(view: View) {
         val intent = Intent(this, RegistroActivity::class.java)
         startActivity(intent)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        cargando.ocultar()
     }
 }

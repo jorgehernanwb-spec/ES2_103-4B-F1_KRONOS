@@ -2,10 +2,16 @@
 package com.example.miprimeraaplicacion.views
 
 import android.os.Bundle
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.materialswitch.MaterialSwitch
 import com.example.miprimeraaplicacion.R
 
@@ -13,16 +19,18 @@ class PreferenciasActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         setContentView(R.layout.activity_preferencias)
 
-        // Conectar los controles del XML con Kotlin
-        val swAlertas = findViewById<MaterialSwitch>(
-            R.id.swNotificaciones
-        )
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
 
-        val spInvernadero = findViewById<Spinner>(
-            R.id.spIdioma
-        )
+        // Conectar los controles del XML con Kotlin
+        val swAlertas = findViewById<MaterialSwitch>(R.id.swNotificaciones)
+        val spInvernadero = findViewById<Spinner>(R.id.spIdioma)
 
         // Guardar preferencias en el dispositivo
         val preferencias = getSharedPreferences(
@@ -41,11 +49,27 @@ class PreferenciasActivity : AppCompatActivity() {
             R.array.idiomas
         )
 
-        val adaptador = ArrayAdapter(
+        // Adaptador con texto blanco para legibilidad óptima en el tema oscuro
+        val adaptador = object : ArrayAdapter<String>(
             this,
             android.R.layout.simple_spinner_item,
             invernaderos
-        )
+        ) {
+            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val view = super.getView(position, convertView, parent) as TextView
+                view.setTextColor(android.graphics.Color.WHITE)
+                view.textSize = 15f
+                return view
+            }
+
+            override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val view = super.getDropDownView(position, convertView, parent) as TextView
+                view.setTextColor(android.graphics.Color.WHITE)
+                view.setBackgroundColor(android.graphics.Color.parseColor("#1B2D26"))
+                view.setPadding(24, 20, 24, 20)
+                return view
+            }
+        }
 
         adaptador.setDropDownViewResource(
             android.R.layout.simple_spinner_dropdown_item
@@ -65,17 +89,13 @@ class PreferenciasActivity : AppCompatActivity() {
 
         // Guardar cambios del Switch
         swAlertas.setOnCheckedChangeListener { _, activado ->
-
             preferencias.edit()
                 .putBoolean("alertas_activadas", activado)
                 .apply()
 
             Toast.makeText(
                 this,
-                if (activado)
-                    "Alertas activadas"
-                else
-                    "Alertas desactivadas",
+                if (activado) "Alertas de temperatura activadas" else "Alertas de temperatura desactivadas",
                 Toast.LENGTH_SHORT
             ).show()
         }
@@ -95,10 +115,13 @@ class PreferenciasActivity : AppCompatActivity() {
                         .apply()
                 }
 
-                override fun onNothingSelected(
-                    parent: android.widget.AdapterView<*>?
-                ) {
+                override fun onNothingSelected(parent: android.widget.AdapterView<*>?) {
                 }
             }
+    }
+
+    // Regresa a BienvenidaActivity finalizando esta actividad
+    fun onVolverClick(view: View) {
+        finish()
     }
 }

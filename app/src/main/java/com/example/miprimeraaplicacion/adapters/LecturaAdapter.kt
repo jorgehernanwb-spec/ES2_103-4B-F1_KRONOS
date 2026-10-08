@@ -8,52 +8,46 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.miprimeraaplicacion.R
 import com.example.miprimeraaplicacion.models.Lectura
+import java.util.Locale
 
-// El constructor ahora recibe dos funciones (lambdas): una para editar y otra para eliminar
 class LecturaAdapter(
-    private var listaLecturas: List<Lectura> = listOf(),
     private val onEditarClick: (Lectura) -> Unit,
     private val onEliminarClick: (Lectura) -> Unit
-) : RecyclerView.Adapter<LecturaAdapter.LecturaViewHolder>() {
+) : RecyclerView.Adapter<LecturaAdapter.ViewHolder>() {
+    private var elementos = listOf<Lectura>()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LecturaViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_lectura, parent, false)
-        return LecturaViewHolder(view)
-    }
-
-    override fun onBindViewHolder(holder: LecturaViewHolder, position: Int) {
-        val lectura = listaLecturas[position]
-        // Le pasamos al bind la lectura y ambas funciones de clic
-        holder.bind(lectura, onEditarClick, onEliminarClick)
-    }
-
-    override fun getItemCount(): Int {
-        return listaLecturas.size
-    }
-
-    fun actualizarLista(nuevaLista: List<Lectura>) {
-        listaLecturas = nuevaLista
+    fun actualizarLista(nuevos: List<Lectura>) {
+        elementos = nuevos
         notifyDataSetChanged()
     }
 
-    class LecturaViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val txtDescripcion: TextView = itemView.findViewById(R.id.txtDescripcion)
-        private val txtValor: TextView = itemView.findViewById(R.id.txtValor)
-        private val btnEliminar: ImageButton = itemView.findViewById(R.id.btnEliminar)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(
+        LayoutInflater.from(parent.context).inflate(R.layout.item_lectura, parent, false)
+    )
 
-        fun bind(lectura: Lectura, onEditarClick: (Lectura) -> Unit, onEliminarClick: (Lectura) -> Unit) {
-            txtDescripcion.text = lectura.descripcion
-            txtValor.text = "Valor: ${lectura.valor}"
+    override fun getItemCount(): Int = elementos.size
 
-            // Configuramos qué pasa cuando alguien toca CUALQUIER PARTE de la fila (para editar)
-            itemView.setOnClickListener {
-                onEditarClick(lectura)
-            }
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.mostrar(elementos[position])
 
-            // Configuramos qué pasa cuando alguien toca ESPECÍFICAMENTE el basurero (para eliminar)
-            btnEliminar.setOnClickListener {
-                onEliminarClick(lectura)
-            }
+    inner class ViewHolder(item: View) : RecyclerView.ViewHolder(item) {
+        private val nombre: TextView = item.findViewById(R.id.txtInvernaderoItem)
+        private val fecha: TextView = item.findViewById(R.id.txtFechaHoraItem)
+        private val temperatura: TextView = item.findViewById(R.id.txtTemperaturaItem)
+        private val humedad: TextView = item.findViewById(R.id.txtHumedadItem)
+        private val ventilador: TextView = item.findViewById(R.id.txtVentiladorItem)
+        private val modo: TextView = item.findViewById(R.id.txtModoItem)
+        private val eliminar: ImageButton = item.findViewById(R.id.btnEliminar)
+
+        fun mostrar(m: Lectura) {
+            nombre.text = m.invernadero
+            fecha.text = m.fechaHora
+            temperatura.text = String.format(Locale.getDefault(), "Temperatura: %.1f °C", m.temperatura)
+            humedad.text = String.format(Locale.getDefault(), "Humedad: %.1f %%", m.humedad)
+            ventilador.text = if (m.ventiladorEncendido) "Ventilador: Encendido" else "Ventilador: Apagado"
+            ventilador.setTextColor(android.graphics.Color.parseColor(if (m.ventiladorEncendido) "#73D99A" else "#FFB1A9"))
+            modo.text = if (m.modoAutomatico) "Automático" else "Manual"
+            itemView.setOnClickListener { onEditarClick(m) }
+            eliminar.setOnClickListener { onEliminarClick(m) }
         }
     }
 }

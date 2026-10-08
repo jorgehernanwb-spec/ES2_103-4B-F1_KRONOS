@@ -1,71 +1,120 @@
 package com.example.miprimeraaplicacion.views
+
 import com.example.miprimeraaplicacion.R
-
-
-// Importa Intent para permitir la navegación hacia la pantalla de Preferencias
+import com.example.miprimeraaplicacion.SimulacionRepository
 import android.content.Intent
-// Importa Bundle para el ciclo de vida de la Activity
 import android.os.Bundle
-// Importa View para recibir la vista que disparó el evento de clic
 import android.view.View
-// Importa TextView para manipular etiquetas de texto en pantalla
 import android.widget.TextView
-// Importa la función para soporte edge-to-edge
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
-// Importa la clase base AppCompatActivity
 import androidx.appcompat.app.AppCompatActivity
-// Importa ViewCompat para listeners de ventanas del sistema
 import androidx.core.view.ViewCompat
-// Importa WindowInsetsCompat para obtener dimensiones de barras de estado/navegación
 import androidx.core.view.WindowInsetsCompat
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import java.util.Locale
 
-// Declaración de la clase para la segunda pantalla (Bienvenida)
 class BienvenidaActivity : AppCompatActivity() {
 
-    // Variable a nivel de clase para almacenar el nombre de usuario recibido y reutilizarlo
-    private var nombreUsuario: String? = null
+    private lateinit var auth: FirebaseAuth
+    private lateinit var db: FirebaseFirestore
+    private lateinit var simulacionRepo: SimulacionRepository
 
-    // Método que se ejecuta al crearse esta pantalla
+    private var emailUsuario: String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
-        // Llama a la inicialización de la superclase
         super.onCreate(savedInstanceState)
-        // Habilita diseño de pantalla completa detrás de las barras del sistema
         enableEdgeToEdge()
-        // Carga y muestra el archivo XML correspondiente (activity_bienvenida.xml)
         setContentView(R.layout.activity_bienvenida)
-        // Ajusta el padding para evitar que el contenido quede oculto bajo las barras del sistema
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            // Obtiene dimensiones de las barras del sistema
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            // Aplica el relleno perimetral a la vista raíz
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            // Devuelve los insets procesados
             insets
         }
 
-        // Lee el dato tipo String que fue enviado desde MainActivity con la clave "usuario"
-        nombreUsuario = intent.getStringExtra("usuario")
-        // Busca y obtiene la referencia del TextView txtBienvenida definido en el XML
+        auth = Firebase.auth
+        db = Firebase.firestore
+        simulacionRepo = SimulacionRepository(this)
+
+        // Email recibido mediante Intent con la clave "usuario"
+        emailUsuario = intent.getStringExtra("usuario") ?: auth.currentUser?.email
         val txtBienvenida = findViewById<TextView>(R.id.txtBienvenida)
-        // Modifica el texto en pantalla concatenando el saludo con el valor recibido
-        txtBienvenida.text = "Bienvenido, $nombreUsuario"
+        txtBienvenida.text = "Bienvenido, ${emailUsuario ?: "Usuario"}"
+
+        // Intentar obtener el nombre del perfil registrado en Firestore sin bloquear la UI
+        val uid = auth.currentUser?.uid
+        if (uid != null) {
+            db.collection("usuarios").document(uid).get()
+                .addOnSuccessListener { doc ->
+                    val nombre = doc.getString("nombre")
+                    if (!nombre.isNullOrBlank()) {
+                        txtBienvenida.text = "Bienvenido, $nombre"
+                    }
+                }
+        }
     }
 
-    // Método público ejecutado automáticamente al hacer clic en el botón btnPreferencias (vía android:onClick)
-    fun onPreferenciasClick(view: View) {
-        // Crea un Intent explícito indicando la pantalla actual (this) y la pantalla destino (PreferenciasActivity)
-        val intent = Intent(this, PreferenciasActivity::class.java)
-        // Empaqueta el nombre de usuario recibido como un dato extra en el Intent con la clave "usuario"
-        intent.putExtra("usuario", nombreUsuario)
-        // Inicia la navegación y lanza la Activity de Preferencias
+    override fun onResume() {
+        super.onResume()
+        // Refresca los valores del invernadero y la simulación al volver de otra pantalla
+        actualizarPanelSimulacion()
+    }
+
+    private fun actualizarPanelSimulacion() {
+        val estado = simulacionRepo.obtenerEstado()
+
+        val txtInvernadero = findViewById<TextView>(R.id.txtInvernaderoSeleccionado)
+        val txtTemperatura = findViewById<TextView>(R.id.txtTemperatura)
+        val txtHumedad = findViewById<TextView>(R.id.txtHumedad)
+        val txtEstadoVentilador = findViewById<TextView>(R.id.txtEstadoVentilador)
+        val txtModoVentilacion = findViewById<TextView>(R.id.txtModoVentilacion)
+        val txtReglaVentilador = findViewById<TextView>(R.id.txtReglaVentilador)
+
+        txtInvernadero.text = "📍 Monitoreando: ${estado.nombreInvernadero}"
+        txtTemperatura.text = String.format(Locale.getDefault(), "%.1f °C", estado.temperatura)
+        txtHumedad.text = String.format(Locale.getDefault(), "%.1f %%", estado.humedad)
+
+        if (estado.ventiladorActivo) {
+            txtEstadoVentilador.text = "Encendido"
+            txtEstadoVentilador.setTextColor(android.graphics.Color.parseColor("#73D99A"))
+        } else {
+            txtEstadoVentilador.text = "Apagado"
+            txtEstadoVentilador.setTextColor(android.graphics.Color.parseColor("#A3B7AC"))
+        }
+
+        txtModoVentilacion.text = if (estado.modoAutomatico) "Modo: Automático" else "Modo: Manual"
+        txtReglaVentilador.text = if (estado.modoAutomatico) {
+            "Regla auto: activo si Temp > 15 °C o Hum > 50 %"
+        } else {
+            "Control manual: estado fijado por el operador"
+        }
+    }
+
+    fun onControlarVentilacionClick(view: View) {
+        val intent = Intent(this, VentilacionActivity::class.java)
         startActivity(intent)
     }
 
-    // Método público ejecutado automáticamente al hacer clic en el botón btnVerLecturas (vía android:onClick)
     fun onVerLecturasClick(view: View) {
-        // Crea un Intent para ir a ListaActivity
         val intent = Intent(this, ListaActivity::class.java)
-        // Inicia la navegación
         startActivity(intent)
+    }
+
+    fun onPreferenciasClick(view: View) {
+        val intent = Intent(this, PreferenciasActivity::class.java)
+        intent.putExtra("usuario", emailUsuario)
+        startActivity(intent)
+    }
+
+    fun onCerrarSesionClick(view: View) {
+        auth.signOut()
+        val intent = Intent(this, MainActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+        finish()
     }
 }

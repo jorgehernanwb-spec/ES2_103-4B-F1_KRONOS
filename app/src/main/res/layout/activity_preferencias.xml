@@ -1,82 +1,211 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F1F8F4"
-    tools:context=".PreferenciasActivity">
+    android:fillViewport="true"
+    android:background="#101E19">
 
-    <!-- Titulo principal -->
-    <TextView
-        android:id="@+id/txtTituloPreferencias"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:text="🌱 Preferencias de CRONOS"
-        android:textColor="#1B5E20"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <!-- Contenedor de preferencias -->
     <LinearLayout
-        android:id="@+id/layoutPreferencias"
-        android:layout_width="0dp"
+        android:id="@+id/main"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginTop="32dp"
         android:orientation="vertical"
-        android:padding="20dp"
-        android:background="#FFFFFF"
-        app:layout_constraintTop_toBottomOf="@id/txtTituloPreferencias"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        android:padding="20dp">
 
-        <!-- Activar alertas -->
-        <com.google.android.material.materialswitch.MaterialSwitch
-            android:id="@+id/swNotificaciones"
+        <!-- Barra superior con flecha de regreso y marca KRONOS -->
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Recibir alertas de temperatura"
-            android:textColor="#263238"
-            android:textSize="16sp" />
+            android:layout_marginTop="8dp">
 
-        <!-- Titulo selector -->
+            <TextView
+                android:id="@+id/btnVolverAtrasPreferencias"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_gravity="start|center_vertical"
+                android:gravity="center"
+                android:text="←"
+                android:textSize="26sp"
+                android:textStyle="bold"
+                android:textColor="#E5CAA0"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Volver al panel principal"
+                android:onClick="onVolverClick" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="KRONOS"
+                android:fontFamily="serif"
+                android:letterSpacing="0.16"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="#E5CAA0" />
+
+        </FrameLayout>
+
+        <!-- Título y subtítulo -->
         <TextView
-            android:id="@+id/txtSeleccionInvernadero"
+            android:id="@+id/txtTituloPreferencias"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="Seleccionar invernadero"
-            android:textColor="#1B5E20"
-            android:textSize="18sp"
+            android:layout_marginTop="16dp"
+            android:text="Preferencias"
+            android:textColor="#FFFFFF"
+            android:textSize="26sp"
             android:textStyle="bold" />
 
-        <!-- Selector de invernadero -->
-        <Spinner
-            android:id="@+id/spIdioma"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:entries="@array/idiomas"
-            android:minHeight="48dp" />
-
-        <!-- Informacion -->
         <TextView
-            android:id="@+id/txtInformacion"
+            android:id="@+id/txtSubtituloPreferencias"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="CRONOS permite monitorear las condiciones ambientales de tus invernaderos."
-            android:textColor="#607D8B"
-            android:textSize="14sp" />
+            android:layout_marginTop="4dp"
+            android:text="Personaliza tu experiencia de monitoreo"
+            android:textColor="#A3B7AC"
+            android:textSize="13sp" />
+
+        <!-- 1. Tarjeta: Alertas ambientales -->
+        <LinearLayout
+            android:id="@+id/cardAlertas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="#243D30"
+            android:orientation="vertical"
+            android:padding="18dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="ALERTAS AMBIENTALES"
+                android:textColor="#E5CAA0"
+                android:textSize="12sp"
+                android:letterSpacing="0.05"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Recibe notificaciones prioritarias ante anomalías de temperatura en los sensores."
+                android:textColor="#A3B7AC"
+                android:textSize="12sp" />
+
+            <com.google.android.material.materialswitch.MaterialSwitch
+                android:id="@+id/swNotificaciones"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="Recibir alertas de temperatura"
+                android:textColor="#FFFFFF"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <!-- 2. Tarjeta: Ubicación monitoreada -->
+        <LinearLayout
+            android:id="@+id/cardUbicacion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:background="#243D30"
+            android:orientation="vertical"
+            android:padding="18dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="UBICACIÓN MONITOREADA"
+                android:textColor="#E5CAA0"
+                android:textSize="12sp"
+                android:letterSpacing="0.05"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtSeleccionInvernadero"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Selecciona el invernadero que se desplegará activamente en el panel principal."
+                android:textColor="#A3B7AC"
+                android:textSize="12sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="12dp"
+                android:background="#1B2D26"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:gravity="center_vertical">
+
+                <Spinner
+                    android:id="@+id/spIdioma"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:popupBackground="#1B2D26"
+                    android:entries="@array/idiomas"
+                    android:minHeight="48dp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- 3. Tarjeta informativa de Simulación IoT -->
+        <LinearLayout
+            android:id="@+id/cardInformacion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:background="#243D30"
+            android:orientation="vertical"
+            android:padding="18dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="ℹ️ SIMULACIÓN AMBIENTAL IoT"
+                android:textColor="#E5CAA0"
+                android:textSize="12sp"
+                android:letterSpacing="0.05"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtInformacion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:lineSpacingExtra="2dp"
+                android:text="KRONOS opera con simulación de lecturas ambientales (temperatura, humedad y control de ventilación). Cada invernadero mantiene sus propios parámetros independientes y sincronizados para la evaluación."
+                android:textColor="#A3B7AC"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+
+        <!-- 4. Botón visible: Volver al panel principal -->
+        <Button
+            android:id="@+id/btnVolverPanelPrincipal"
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
+            android:layout_marginTop="28dp"
+            android:backgroundTint="#358655"
+            android:onClick="onVolverClick"
+            android:text="VOLVER AL PANEL PRINCIPAL"
+            android:textColor="#FFFFFF" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="16dp"
+            android:gravity="center"
+            android:text="KRONOS · SISTEMA DE SEGURIDAD Y CONTROL"
+            android:textColor="#769585"
+            android:textSize="11sp" />
 
     </LinearLayout>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

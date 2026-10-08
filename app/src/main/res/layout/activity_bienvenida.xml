@@ -1,51 +1,316 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".BienvenidaActivity">
+    android:fillViewport="true"
+    android:background="#101E19">
 
-    <!-- Mensaje de bienvenida centrado horizontalmente y en la mitad superior -->
-    <TextView
-        android:id="@+id/txtBienvenida"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/main"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Bienvenido"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/btnPreferencias"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed" />
+        android:orientation="vertical"
+        android:padding="20dp">
 
-    <!-- Botón para navegar a la pantalla de Preferencias -->
-    <Button
-        android:id="@+id/btnPreferencias"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:onClick="onPreferenciasClick"
-        android:text="Preferencias"
-        app:layout_constraintBottom_toTopOf="@+id/btnVerLecturas"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtBienvenida" />
+        <!-- Encabezado de la aplicación -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_marginTop="8dp">
 
-    <!-- Botón para navegar a la pantalla de Lecturas -->
-    <Button
-        android:id="@+id/btnVerLecturas"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:onClick="onVerLecturasClick"
-        android:text="Ver Lecturas"
-        android:backgroundTint="#2196F3"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnPreferencias" />
+            <TextView
+                android:id="@+id/imgLogoBienvenida"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:gravity="center"
+                android:text="⌛"
+                android:textSize="44sp"
+                android:background="#20392F"
+                android:contentDescription="Logo de Kronos" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:id="@+id/txtNombreKronosBienvenida"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="KRONOS"
+                android:fontFamily="serif"
+                android:letterSpacing="0.16"
+                android:textSize="32sp"
+                android:textStyle="bold"
+                android:textColor="#E5CAA0" />
+
+            <!-- Descripción del servicio ofrecido -->
+            <TextView
+                android:id="@+id/txtDescripcionServicio"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:gravity="center"
+                android:text="Sistema inteligente de monitoreo y control de ventilación para invernaderos"
+                android:textColor="#A3B7AC"
+                android:textSize="12sp"
+                android:lineSpacingExtra="2dp" />
+
+            <!-- Indicador visible de Simulación -->
+            <TextView
+                android:id="@+id/txtInsigniaSimulacion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="#1B2D26"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:text="⚡ SIMULACIÓN IoT ACTIVA"
+                android:textColor="#73D99A"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.05" />
+
+        </LinearLayout>
+
+        <!-- Tarjeta de Saludo e Invernadero seleccionado -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:background="#1B2D26">
+
+            <TextView
+                android:id="@+id/txtBienvenida"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Bienvenido"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtInvernaderoSeleccionado"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="📍 Monitoreando: Invernadero 1"
+                android:textColor="#E5CAA0"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+        <!-- Sección de métricas ambientales -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="MÉTRICAS AMBIENTALES EN TIEMPO REAL"
+            android:textColor="#769585"
+            android:textSize="11sp"
+            android:letterSpacing="0.05"
+            android:textStyle="bold" />
+
+        <!-- Fila de Tarjetas: Temperatura y Humedad -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal">
+
+            <!-- Tarjeta Temperatura -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="6dp"
+                android:background="#243D30"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🌡️ TEMPERATURA"
+                    android:textColor="#A3B7AC"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txtTemperatura"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="24.0 °C"
+                    android:textColor="#FFFFFF"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Umbral: > 15 °C"
+                    android:textColor="#73D99A"
+                    android:textSize="11sp" />
+
+            </LinearLayout>
+
+            <!-- Tarjeta Humedad -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="6dp"
+                android:background="#243D30"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="💧 HUMEDAD"
+                    android:textColor="#A3B7AC"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txtHumedad"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="65.0 %"
+                    android:textColor="#FFFFFF"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Umbral: > 50 %"
+                    android:textColor="#73D99A"
+                    android:textSize="11sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Tarjeta de Estado del Ventilador y Modo -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:background="#243D30">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="🌀 ESTADO DEL VENTILADOR"
+                    android:textColor="#A3B7AC"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txtModoVentilacion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Modo: Automático"
+                    android:textColor="#E5CAA0"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/txtEstadoVentilador"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Encendido"
+                android:textColor="#73D99A"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtReglaVentilador"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Regla auto: ventilador activo si Temp > 15 °C o Hum > 50 %"
+                android:textColor="#A3B7AC"
+                android:textSize="11sp" />
+
+        </LinearLayout>
+
+        <!-- Botones de Acción y Navegación -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="ACCIONES Y CONTROL"
+            android:textColor="#769585"
+            android:textSize="11sp"
+            android:letterSpacing="0.05"
+            android:textStyle="bold" />
+
+        <!-- Botón Controlar ventilación -->
+        <Button
+            android:id="@+id/btnControlarVentilacion"
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="#358655"
+            android:onClick="onControlarVentilacionClick"
+            android:text="CONTROLAR VENTILACIÓN"
+            android:textColor="#FFFFFF" />
+
+        <!-- Botón Historial de mediciones -->
+        <Button
+            android:id="@+id/btnVerLecturas"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginTop="10dp"
+            android:backgroundTint="#254D38"
+            android:onClick="onVerLecturasClick"
+            android:text="HISTORIAL DE MEDICIONES"
+            android:textColor="#90DEAA" />
+
+        <!-- Botón Preferencias -->
+        <Button
+            android:id="@+id/btnPreferencias"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:backgroundTint="#1B2D26"
+            android:onClick="onPreferenciasClick"
+            android:text="PREFERENCIAS DEL SISTEMA"
+            android:textColor="#E5CAA0" />
+
+        <!-- Botón Cerrar sesión -->
+        <Button
+            android:id="@+id/btnCerrarSesion"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="#3D2626"
+            android:onClick="onCerrarSesionClick"
+            android:text="Cerrar sesión"
+            android:textColor="#FF8A80" />
+
+    </LinearLayout>
+</ScrollView>

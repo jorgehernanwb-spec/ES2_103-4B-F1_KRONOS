@@ -1,67 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout 
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#F5F5F5">
-
-    <!-- Logo de INACAP centrado en la parte superior -->
-    <ImageView
-        android:id="@+id/imgLogoLista"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginTop="40dp"
-        android:src="@drawable/logo_inacap"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <!-- Título de la pantalla -->
-    <TextView
-        android:id="@+id/txtTituloLista"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Historial de Lecturas"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:textColor="#333333"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imgLogoLista" />
-
-    <!-- Lista de lecturas (ocupando un sector de la pantalla, 65% del alto y 90% del ancho) -->
-    <!-- Le pusimos un fondo blanco y un pequeño borde (elevation) para que se distinga del fondo gris -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvLecturas"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="24dp"
-        android:background="@android:color/white"
-        android:elevation="4dp"
-        android:padding="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.65"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtTituloLista"
-        app:layout_constraintVertical_bias="0.2"
-        app:layout_constraintWidth_percent="0.9" />
-
-    <!-- Botón flotante para agregar una nueva lectura -->
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabAgregarLectura"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
-        android:layout_marginBottom="24dp"
-        android:clickable="true"
-        android:contentDescription="Agregar lectura"
-        app:backgroundTint="#4CAF50"
-        app:tint="@android:color/white"
-        android:src="@android:drawable/ic_input_add"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical" android:padding="16dp" android:background="#101E19">
+    <TextView android:id="@+id/btnAtrasLista" android:layout_width="wrap_content" android:layout_height="48dp"
+        android:gravity="center_vertical" android:text="‹  Volver" android:textSize="19sp" android:textColor="#E5CAA0" />
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="KRONOS"
+        android:fontFamily="serif" android:textStyle="bold" android:textSize="30sp" android:textColor="#E5CAA0" />
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Historial ambiental"
+        android:textStyle="bold" android:textSize="22sp" android:textColor="#FFFFFF" android:layout_marginBottom="12dp" />
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Mediciones guardadas en Firestore · Toca una para editar"
+        android:textColor="#B5CDBB" android:layout_marginBottom="12dp" />
+    <com.google.android.material.button.MaterialButton android:id="@+id/fabAgregarLectura"
+        android:layout_width="match_parent" android:layout_height="wrap_content" android:text="+ Agregar medición"
+        android:textColor="#FFFFFF" app:backgroundTint="#358655" />
+    <TextView android:id="@+id/txtEstadoLista" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text="Cargando mediciones..." android:textColor="#E5CAA0" android:gravity="center" android:padding="15dp" />
+    <androidx.recyclerview.widget.RecyclerView android:id="@+id/rvLecturas" android:layout_width="match_parent"
+        android:layout_height="0dp" android:layout_weight="1" android:clipToPadding="false" android:paddingTop="4dp" />
+    <com.google.android.material.button.MaterialButton android:id="@+id/btnVolverLista"
+        android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Volver al panel principal"
+        android:textColor="#FFFFFF" app:backgroundTint="#358655" />
+</LinearLayout>

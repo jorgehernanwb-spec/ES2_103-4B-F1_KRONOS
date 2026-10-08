@@ -1,19 +1,18 @@
 package com.example.miprimeraaplicacion.views
+
 import com.example.miprimeraaplicacion.R
-
-
 import android.content.Intent
 import android.os.Bundle
 import android.util.Patterns
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
-import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.miprimeraaplicacion.CargandoDialog
 
 // FIREBASE: IMPORTACIONES DE FIREBASE AUTH Y FIRESTORE
 import com.google.firebase.auth.FirebaseAuth
@@ -27,6 +26,13 @@ class RegistroActivity : AppCompatActivity() {
     // FIREBASE: DECLARACIÓN DE INSTANCIAS DE FIREBASE
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
+    private lateinit var cargando: CargandoDialog
+
+    // Control para evitar registros duplicados por múltiples pulsaciones
+    private var isRegistering: Boolean = false
+
+    private var mostrandoPassword: Boolean = false
+    private var mostrandoConfirmarPassword: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,25 +47,45 @@ class RegistroActivity : AppCompatActivity() {
         // FIREBASE: INICIALIZACIÓN DE FIREBASE AUTH Y FIRESTORE
         auth = Firebase.auth
         db = Firebase.firestore
+        cargando = CargandoDialog(this)
     }
 
-    // Helper para bloquear/desbloquear botones y mostrar/ocultar la barra de carga (loading)
-    private fun mostrarEstadoCargando(cargando: Boolean) {
-        val btnRegistrar = findViewById<Button>(R.id.btnRegistrar)
-        val btnVolverLogin = findViewById<Button>(R.id.btnVolverLogin)
-        val progressBar = findViewById<ProgressBar>(R.id.progressBarRegistro)
+    // Alternar visibilidad del campo contraseña
+    fun onMostrarPasswordRegistroClick(view: View) {
+        val edtPassword = findViewById<EditText>(R.id.edtPasswordRegistro)
+        if (!mostrandoPassword) {
+            edtPassword.inputType = android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+            mostrandoPassword = true
+        } else {
+            edtPassword.inputType = android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD
+            mostrandoPassword = false
+        }
+        edtPassword.setSelection(edtPassword.text.length)
+    }
 
-        btnRegistrar.isEnabled = !cargando
-        btnVolverLogin.isEnabled = !cargando
-        progressBar.visibility = if (cargando) View.VISIBLE else View.GONE
+    // Alternar visibilidad del campo confirmar contraseña
+    fun onMostrarConfirmarPasswordClick(view: View) {
+        val edtConfirmar = findViewById<EditText>(R.id.edtConfirmarPassword)
+        if (!mostrandoConfirmarPassword) {
+            edtConfirmar.inputType = android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+            mostrandoConfirmarPassword = true
+        } else {
+            edtConfirmar.inputType = android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD
+            mostrandoConfirmarPassword = false
+        }
+        edtConfirmar.setSelection(edtConfirmar.text.length)
     }
 
     // Método ejecutado al hacer clic en el botón Registrarse
     fun onRegistrarClick(view: View) {
+        if (isRegistering) return
+
         val edtNombre = findViewById<EditText>(R.id.edtNombreRegistro)
         val edtEmail = findViewById<EditText>(R.id.edtEmailRegistro)
         val edtPassword = findViewById<EditText>(R.id.edtPasswordRegistro)
         val edtConfirmarPassword = findViewById<EditText>(R.id.edtConfirmarPassword)
+        val btnRegistrar = findViewById<Button>(R.id.btnRegistrar)
+        val btnVolverLogin = findViewById<Button>(R.id.btnVolverLogin)
 
         val nombre = edtNombre.text.toString().trim()
         val email = edtEmail.text.toString().trim()
@@ -105,57 +131,77 @@ class RegistroActivity : AppCompatActivity() {
             edtConfirmarPassword.error = null
         }
 
-        if (esValido) {
-            // Muestra la barra de carga y bloquea los botones para evitar múltiples clics
-            mostrarEstadoCargando(true)
-
-            // FIREBASE 1: CREACIÓN DEL USUARIO EN FIREBASE AUTH
-            auth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this) { task ->
-                    if (task.isSuccessful) {
-                        val uid = auth.currentUser?.uid ?: ""
-
-                        // FIREBASE 2: CREACIÓN DEL MAPA DE DATOS Y ALMACENAMIENTO EN FIRESTORE
-                        val datosUsuario = hashMapOf(
-                            "uid" to uid,
-                            "nombre" to nombre,
-                            "email" to email,
-                            "fechaRegistro" to System.currentTimeMillis()
-                        )
-
-                        android.util.Log.d("RegistroActivity", "FIREBASE: Intentando guardar en Firestore para UID: $uid")
-
-                        // Guardar en la colección "usuarios" usando el UID como ID del documento
-                        db.collection("usuarios").document(uid)
-                            .set(datosUsuario)
-                            .addOnSuccessListener {
-                                android.util.Log.d("RegistroActivity", "FIREBASE: Documento guardado exitosamente en Firestore")
-                                Toast.makeText(this, "FIREBASE: Usuario guardado en BD con éxito", Toast.LENGTH_SHORT).show()
-
-                                mostrarEstadoCargando(false)
-
-                                // Navegar a BienvenidaActivity tras registrar exitosamente
-                                val intent = Intent(this, BienvenidaActivity::class.java)
-                                intent.putExtra("usuario", email)
-                                startActivity(intent)
-                                finish()
-                            }
-                            .addOnFailureListener { e ->
-                                mostrarEstadoCargando(false)
-                                android.util.Log.e("RegistroActivity", "FIREBASE FIRESTORE Error", e)
-                                Toast.makeText(this, "FIREBASE FIRESTORE Error: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
-                            }
-                    } else {
-                        mostrarEstadoCargando(false)
-                        val mensajeError = task.exception?.localizedMessage ?: "Error al registrar usuario"
-                        Toast.makeText(this, "FIREBASE AUTH Error: $mensajeError", Toast.LENGTH_LONG).show()
-                    }
-                }
+        if (!esValido) {
+            return
         }
+
+        isRegistering = true
+        btnRegistrar.isEnabled = false
+        btnVolverLogin.isEnabled = false
+
+        cargando.mostrar("Creando cuenta...")
+
+        // FIREBASE 1: CREACIÓN DEL USUARIO EN FIREBASE AUTH
+        auth.createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    val uid = auth.currentUser?.uid ?: ""
+
+                    // FIREBASE 2: CREACIÓN DEL MAPA DE DATOS Y ALMACENAMIENTO EN FIRESTORE
+                    val datosUsuario = hashMapOf(
+                        "uid" to uid,
+                        "nombre" to nombre,
+                        "email" to email,
+                        "fechaRegistro" to System.currentTimeMillis()
+                    )
+
+                    android.util.Log.d("RegistroActivity", "FIREBASE: Intentando guardar en Firestore para UID: $uid")
+
+                    // Guardar en la colección "usuarios" usando el UID como ID del documento
+                    db.collection("usuarios").document(uid)
+                        .set(datosUsuario)
+                        .addOnSuccessListener {
+                            cargando.ocultar()
+                            isRegistering = false
+
+                            android.util.Log.d("RegistroActivity", "FIREBASE: Documento guardado exitosamente en Firestore")
+                            Toast.makeText(this, "Registro exitoso en KRONOS", Toast.LENGTH_SHORT).show()
+
+                            // Navegar a BienvenidaActivity tras registrar exitosamente
+                            val intent = Intent(this, BienvenidaActivity::class.java)
+                            intent.putExtra("usuario", email)
+                            startActivity(intent)
+                            finish()
+                        }
+                        .addOnFailureListener { e ->
+                            cargando.ocultar()
+                            isRegistering = false
+                            btnRegistrar.isEnabled = true
+                            btnVolverLogin.isEnabled = true
+
+                            android.util.Log.e("RegistroActivity", "FIREBASE FIRESTORE Error", e)
+                            val mensajeError = e.localizedMessage ?: "Error al guardar en base de datos"
+                            Toast.makeText(this, "FIREBASE FIRESTORE Error: $mensajeError", Toast.LENGTH_LONG).show()
+                        }
+                } else {
+                    cargando.ocultar()
+                    isRegistering = false
+                    btnRegistrar.isEnabled = true
+                    btnVolverLogin.isEnabled = true
+
+                    val mensajeError = task.exception?.localizedMessage ?: "Error al registrar usuario"
+                    Toast.makeText(this, "FIREBASE AUTH Error: $mensajeError", Toast.LENGTH_LONG).show()
+                }
+            }
     }
 
-    // Método ejecutado al hacer clic en el botón Volver
+    // Método ejecutado al hacer clic en el botón Volver o en la flecha de regreso
     fun onVolverLoginClick(view: View) {
         finish()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        cargando.ocultar()
     }
 }

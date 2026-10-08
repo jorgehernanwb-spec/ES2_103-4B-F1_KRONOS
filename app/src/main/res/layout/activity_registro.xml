@@ -1,121 +1,257 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".RegistroActivity">
+    android:fillViewport="true"
+    android:background="#101E19">
 
-    <!-- Logo INACAP centrado en la parte superior -->
-    <ImageView
-        android:id="@+id/imgLogoRegistro"
-        android:layout_width="96dp"
-        android:layout_height="96dp"
-        android:layout_marginTop="32dp"
-        android:src="@drawable/logo_inacap"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <!-- Título de la pantalla -->
-    <TextView
-        android:id="@+id/txtTituloRegistro"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/main"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Crear Nueva Cuenta"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/imgLogoRegistro" />
+        android:orientation="vertical"
+        android:padding="24dp">
 
-    <!-- Campo de Nombre Completo -->
-    <EditText
-        android:id="@+id/edtNombreRegistro"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="24dp"
-        android:hint="Nombre Completo"
-        android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txtTituloRegistro" />
+        <!-- Barra superior con flecha de regreso -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp">
 
-    <!-- Campo de Correo Electrónico -->
-    <EditText
-        android:id="@+id/edtEmailRegistro"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:hint="Correo Electrónico"
-        android:inputType="textEmailAddress"
-        app:layout_constraintEnd_toEndOf="@id/edtNombreRegistro"
-        app:layout_constraintStart_toStartOf="@id/edtNombreRegistro"
-        app:layout_constraintTop_toBottomOf="@id/edtNombreRegistro" />
+            <TextView
+                android:id="@+id/btnVolverAtras"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_gravity="start|center_vertical"
+                android:gravity="center"
+                android:text="←"
+                android:textSize="26sp"
+                android:textStyle="bold"
+                android:textColor="#E5CAA0"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Volver al Login"
+                android:onClick="onVolverLoginClick" />
 
-    <!-- Campo de Contraseña -->
-    <EditText
-        android:id="@+id/edtPasswordRegistro"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:hint="Contraseña (mínimo 6 caracteres)"
-        android:inputType="textPassword"
-        app:layout_constraintEnd_toEndOf="@id/edtEmailRegistro"
-        app:layout_constraintStart_toStartOf="@id/edtEmailRegistro"
-        app:layout_constraintTop_toBottomOf="@id/edtEmailRegistro" />
+        </FrameLayout>
 
-    <!-- Campo de Confirmar Contraseña -->
-    <EditText
-        android:id="@+id/edtConfirmarPassword"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:hint="Confirmar Contraseña"
-        android:inputType="textPassword"
-        app:layout_constraintEnd_toEndOf="@id/edtPasswordRegistro"
-        app:layout_constraintStart_toStartOf="@id/edtPasswordRegistro"
-        app:layout_constraintTop_toBottomOf="@id/edtPasswordRegistro" />
+        <!-- Logo provisional de KRONOS (reutilizando icono de cronómetro) -->
+        <TextView
+            android:id="@+id/imgLogoRegistro"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:text="⌛"
+            android:textSize="48sp"
+            android:background="#20392F"
+            android:contentDescription="Logo de Kronos" />
 
-    <!-- Botón de Registrarse -->
-    <Button
-        android:id="@+id/btnRegistrar"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:onClick="onRegistrarClick"
-        android:text="Registrarse"
-        app:layout_constraintEnd_toEndOf="@id/edtConfirmarPassword"
-        app:layout_constraintStart_toStartOf="@id/edtConfirmarPassword"
-        app:layout_constraintTop_toBottomOf="@id/edtConfirmarPassword" />
+        <!-- Encabezado con el nombre KRONOS en tipografía clásica -->
+        <TextView
+            android:id="@+id/txtNombreKronosRegistro"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="12dp"
+            android:text="KRONOS"
+            android:fontFamily="serif"
+            android:letterSpacing="0.16"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            android:textColor="#E5CAA0" />
 
-    <!-- Botón de Volver al Login -->
-    <Button
-        android:id="@+id/btnVolverLogin"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:backgroundTint="#757575"
-        android:onClick="onVolverLoginClick"
-        android:text="Ya tengo cuenta / Volver"
-        app:layout_constraintEnd_toEndOf="@id/btnRegistrar"
-        app:layout_constraintStart_toStartOf="@id/btnRegistrar"
-        app:layout_constraintTop_toBottomOf="@id/btnRegistrar" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="4dp"
+            android:text="REGISTRO DE USUARIO"
+            android:textSize="11sp"
+            android:letterSpacing="0.04"
+            android:textColor="#A3B7AC" />
 
-    <!-- Barra de Carga / Loading Progress Indicator -->
-    <ProgressBar
-        android:id="@+id/progressBarRegistro"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnVolverLogin" />
+        <!-- Tarjeta del formulario -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:orientation="vertical"
+            android:padding="22dp"
+            android:background="#1B2D26">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:id="@+id/txtTituloRegistro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Crear Nueva Cuenta"
+                android:textColor="#FFFFFF"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Acceso al monitoreo inteligente de invernaderos"
+                android:textColor="#A3B7AC"
+                android:textSize="13sp" />
+
+            <!-- Campo Nombre completo -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Nombre completo"
+                android:textColor="#C4D6CA"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/edtNombreRegistro"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="6dp"
+                android:backgroundTint="#73D99A"
+                android:hint="Ej: Juan Pérez"
+                android:inputType="textPersonName|textCapWords"
+                android:singleLine="true"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#91A99A" />
+
+            <!-- Campo Correo electrónico -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Correo electrónico"
+                android:textColor="#C4D6CA"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/edtEmailRegistro"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="6dp"
+                android:backgroundTint="#73D99A"
+                android:hint="correo@ejemplo.com"
+                android:inputType="textEmailAddress"
+                android:singleLine="true"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#91A99A" />
+
+            <!-- Campo Contraseña -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Contraseña (mínimo 6 caracteres)"
+                android:textColor="#C4D6CA"
+                android:textSize="14sp" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="6dp">
+
+                <EditText
+                    android:id="@+id/edtPasswordRegistro"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="48dp"
+                    android:backgroundTint="#73D99A"
+                    android:hint="Ingresa tu contraseña"
+                    android:inputType="textPassword"
+                    android:singleLine="true"
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#91A99A" />
+
+                <ImageButton
+                    android:id="@+id/btnMostrarPasswordRegistro"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="end|center_vertical"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="Mostrar u ocultar contraseña"
+                    android:onClick="onMostrarPasswordRegistroClick"
+                    android:src="@drawable/ic_visibility_24"
+                    app:tint="#A3B7AC" />
+
+            </FrameLayout>
+
+            <!-- Campo Confirmar contraseña -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Confirmar contraseña"
+                android:textColor="#C4D6CA"
+                android:textSize="14sp" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="6dp">
+
+                <EditText
+                    android:id="@+id/edtConfirmarPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="48dp"
+                    android:backgroundTint="#73D99A"
+                    android:hint="Repite tu contraseña"
+                    android:inputType="textPassword"
+                    android:singleLine="true"
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#91A99A" />
+
+                <ImageButton
+                    android:id="@+id/btnMostrarConfirmarPassword"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="end|center_vertical"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="Mostrar u ocultar confirmar contraseña"
+                    android:onClick="onMostrarConfirmarPasswordClick"
+                    android:src="@drawable/ic_visibility_24"
+                    app:tint="#A3B7AC" />
+
+            </FrameLayout>
+
+            <!-- Botón Crear cuenta -->
+            <Button
+                android:id="@+id/btnRegistrar"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="24dp"
+                android:backgroundTint="#358655"
+                android:onClick="onRegistrarClick"
+                android:text="CREAR CUENTA"
+                android:textColor="#FFFFFF" />
+
+            <!-- Enlace / Botón Volver al Login -->
+            <Button
+                android:id="@+id/btnVolverLogin"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="12dp"
+                android:backgroundTint="#254D38"
+                android:onClick="onVolverLoginClick"
+                android:text="¿Ya tienes cuenta? Inicia sesión"
+                android:textColor="#90DEAA" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="16dp"
+            android:gravity="center"
+            android:text="KRONOS · SISTEMA DE SEGURIDAD Y CONTROL"
+            android:textColor="#769585"
+            android:textSize="11sp" />
+
+    </LinearLayout>
+</ScrollView>
